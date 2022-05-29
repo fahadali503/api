@@ -2,6 +2,42 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type User {
+  _id: String!
+  fullName: String!
+  username: String!
+  email: String!
+  role: String!
+  isAccountVerified: Boolean!
+  isAccountConfirmed: Boolean!
+  isPremiumAccount: Boolean!
+  isOnline: Boolean!
+  imageId: Image
+  profilePicture: String!
+  lastSeen: DateTime!
+  favourites: [String!]
+  followings: [String!]
+  location: String
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Image {
+  width: Float!
+  height: Float!
+  format: String!
+  resource_type: String!
+  bytes: Float!
+  url: String!
+  original_filename: String!
+  userId: User!
+  createdAt: String!
+  updatedAt: String!
+}
+
 type Query {
   getName: String!
 }

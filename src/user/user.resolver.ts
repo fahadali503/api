@@ -16,7 +16,9 @@ export class UserResolver {
         return 'Hello World'
     }
     @Mutation(returns => String)
-    signUp(@Args('data') data: SignUpInput, @Args('profilePicture', { type: () => GraphQLUpload }) profilePicture: FileUpload) {
+    signUp(@Args('data') data: SignUpInput,
+        @Args('profilePicture', { type: () => GraphQLUpload })
+        profilePicture: FileUpload): Promise<string> {
         return this.UserService.createUser(data, profilePicture);
     }
 }

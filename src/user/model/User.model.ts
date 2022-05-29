@@ -2,13 +2,18 @@ import { ROLES } from "src/utils/role";
 import { modelOptions, prop, Ref } from '@typegoose/typegoose'
 import { Location } from "src/common/models/Location";
 import { Field, ObjectType } from "@nestjs/graphql";
+import { Image } from "src/common/models/Image";
 
 @ObjectType()
 @modelOptions({ schemaOptions: { timestamps: true } })
 export class User {
     @Field()
+    _id: string;
+
+    @Field()
     @prop()
     fullName: string;
+
     @Field()
     @prop()
     username: string;
@@ -17,7 +22,6 @@ export class User {
     @prop()
     email: string;
 
-    @Field()
     @prop()
     password: string;
 
@@ -45,6 +49,10 @@ export class User {
     @Field(type => Boolean)
     isOnline: boolean;
 
+    @Field(type => Image, { nullable: true })
+    @prop({ type: String })
+    imageId: Ref<Image, string>;
+
     @prop()
     @Field()
     profilePicture: string;
@@ -55,13 +63,13 @@ export class User {
     lastSeen: Date;
     // Favourite Businesses for User
 
-    @prop()
     @Field(type => [String], { nullable: true })
+    @prop()
     favourites?: string[];
     // Followings for Business
 
-    @prop()
     @Field(type => [String], { nullable: true })
+    @prop()
     followings?: string[];
 
 
