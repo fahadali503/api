@@ -4,21 +4,29 @@ import { SignUpInput } from './args-types/sign-up.args';
 import { GraphQLUpload, FileUpload } from 'graphql-upload';
 import { User } from './model/User.model';
 import { UserService } from './user.service';
+import { CurrentUser } from 'src/auth/current-user-decorator';
+import { IJwtPayload } from 'src/utils/types';
+import { UseGuards } from '@nestjs/common';
+import { GqlGuard } from 'src/auth/gql.guard';
+import { Public } from 'src/auth/public.decorator';
 
 
-@Resolver(type => User)
+@UseGuards(GqlGuard)
+@Resolver(of => User)
 export class UserResolver {
-
     constructor(private readonly UserService: UserService) { }
 
-    @Query(returns => String)
-    getName() {
-        return 'Hello World'
-    }
+    @Public()
     @Mutation(returns => String)
     signUp(@Args('data') data: SignUpInput,
         @Args('profilePicture', { type: () => GraphQLUpload })
         profilePicture: FileUpload): Promise<string> {
         return this.UserService.createUser(data, profilePicture);
     }
+
+    @Query(type => User)
+    me(@CurrentUser() user: IJwtPayload): Promise<User> {
+        return this.UserService.findUserById(user._id)
+    }
+
 }

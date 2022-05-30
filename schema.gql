@@ -15,9 +15,10 @@ type User {
   imageId: Image
   profilePicture: String!
   lastSeen: DateTime!
-  favourites: [String!]
-  followings: [String!]
+  blocked: Boolean!
   location: String
+  createdAt: String!
+  updatedAt: String!
 }
 
 """
@@ -38,8 +39,35 @@ type Image {
   updatedAt: String!
 }
 
+type Auth {
+  token: String!
+  user: User!
+}
+
+type Customer {
+  _id: String!
+  fullName: String!
+  username: String!
+  email: String!
+  role: String!
+  isAccountVerified: Boolean!
+  isAccountConfirmed: Boolean!
+  isPremiumAccount: Boolean!
+  isOnline: Boolean!
+  imageId: Image
+  profilePicture: String!
+  lastSeen: DateTime!
+  blocked: Boolean!
+  location: String
+  createdAt: String!
+  updatedAt: String!
+  favourites: [String!]
+}
+
 type Query {
-  getName: String!
+  me: User!
+  login(email: String!, password: String!): Auth!
+  getCustomer: Customer!
 }
 
 type Mutation {

@@ -25,6 +25,11 @@ export class UserService {
         return await this.UserModel.findOne({ email })
     }
 
+    async findUserById(id: string): Promise<User> {
+        const user = await this.UserModel.findById(id);
+        return user;
+    }
+
     async createUser(data: SignUpInput, file: FileUpload): Promise<string> {
         const { email, fullName, password, role, username } = data;
         const existByUsername = await this.findByUsername(username);

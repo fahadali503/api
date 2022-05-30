@@ -63,12 +63,19 @@ export class User {
     lastSeen: Date;
     // Favourite Businesses for User
 
-    @Field(type => [String], { nullable: true })
     @prop()
     favourites?: string[];
     // Followings for Business
 
-    @Field(type => [String], { nullable: true })
+    // If admin blocked the User
+    @Field(type => Boolean)
+    @prop({ default: false })
+    blocked: boolean
+
+    // Users list blocked by the user
+    @prop({ type: String, default: [] })
+    blockedUsers: Ref<User, string>[]
+
     @prop()
     followings?: string[];
 
@@ -76,4 +83,11 @@ export class User {
     @prop()
     @Field(type => String, { nullable: true })
     location: Ref<Location, string>;
+
+
+    @Field()
+    createdAt: string;
+
+    @Field()
+    updatedAt: string
 }
