@@ -25,7 +25,7 @@ export class User {
     @prop()
     password: string;
 
-    @Field(type => String)
+    @Field(type => ROLES)
     @prop({ enum: Object.values(ROLES) })
     role: ROLES;
 
@@ -81,7 +81,7 @@ export class User {
 
 
     @prop()
-    @Field(type => String, { nullable: true })
+    @Field(type => Location, { nullable: true })
     location: Ref<Location, string>;
 
 

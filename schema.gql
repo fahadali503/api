@@ -2,12 +2,27 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Coordinate {
+  accuracy: Float!
+  altitude: Float
+  altitudeAccuracy: Float
+  heading: Float
+  latitude: Float!
+  longitude: Float!
+  speed: Float
+}
+
+type Location {
+  coords: Coordinate!
+  timestamp: Float!
+}
+
 type User {
   _id: String!
   fullName: String!
   username: String!
   email: String!
-  role: String!
+  role: Roles!
   isAccountVerified: Boolean!
   isAccountConfirmed: Boolean!
   isPremiumAccount: Boolean!
@@ -16,9 +31,26 @@ type User {
   profilePicture: String!
   lastSeen: DateTime!
   blocked: Boolean!
-  location: String
+  location: Location
   createdAt: String!
   updatedAt: String!
+}
+
+enum Roles {
+  """Customer Role"""
+  CUSTOMER
+
+  """The Seller who will sale products."""
+  SELLER
+
+  """The Marketer who will help Seller to sale their products."""
+  MARKETER
+
+  """Admin Role"""
+  ADMIN
+
+  """The Super Admin will manage all other roles."""
+  SUPER_ADMIN
 }
 
 """
@@ -44,7 +76,7 @@ type Customer {
   fullName: String!
   username: String!
   email: String!
-  role: String!
+  role: Roles!
   isAccountVerified: Boolean!
   isAccountConfirmed: Boolean!
   isPremiumAccount: Boolean!
@@ -53,10 +85,57 @@ type Customer {
   profilePicture: String!
   lastSeen: DateTime!
   blocked: Boolean!
-  location: String
+  location: Location
   createdAt: String!
   updatedAt: String!
   favourites: [String!]
+}
+
+type BusinessReview {
+  _id: String!
+
+  """The User who will review the Business."""
+  reviewerId: User!
+
+  """The Business that will get review."""
+  businesId: Business!
+  review: Float!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type BusinessComment {
+  businessId: Business!
+  businessOwnerId: User!
+  commentorId: User!
+  comment: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""Business Schema for Seller"""
+type Business {
+  ownerId: User!
+  businessName: String!
+  businessDescription: String!
+  businessImage: String!
+  businessEmail: String!
+  ownerName: String!
+  ownerCNIC: String!
+  businessPhone: String!
+  location: Location
+  experience: String!
+  createdAt: String!
+  updatedAt: String!
+  offDays: [String!]!
+  favourites: [User!]!
+  likes: [User!]!
+
+  """Reviews of the Business."""
+  reviews: [BusinessReview!]!
+  comments: [BusinessComment!]!
+  closingTime: String!
+  openingTime: String!
 }
 
 type Auth {
@@ -80,7 +159,7 @@ type Seller {
   fullName: String!
   username: String!
   email: String!
-  role: String!
+  role: Roles!
   isAccountVerified: Boolean!
   isAccountConfirmed: Boolean!
   isPremiumAccount: Boolean!
@@ -89,15 +168,16 @@ type Seller {
   profilePicture: String!
   lastSeen: DateTime!
   blocked: Boolean!
-  location: String
+  location: Location
   createdAt: String!
   updatedAt: String!
-  business: String!
-  followings: [User!]
+  business: Business
+  followings: [User!]!
 }
 
 type Mutation {
   signUp(data: SignUpInput!, profilePicture: Upload!): String!
+  createBusiness(data: CreateBusinessInput!, businessImage: Upload!): Business!
 }
 
 input SignUpInput {
@@ -110,3 +190,17 @@ input SignUpInput {
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+"""The Input Type for the Creation of the Business"""
+input CreateBusinessInput {
+  businessName: String!
+  businessDescription: String!
+  businessEmail: String!
+  ownerName: String!
+  ownerCNIC: String!
+  businessPhone: String!
+  experience: String!
+  offDays: [Float!]!
+  closingTime: String!
+  openingTime: String!
+}
