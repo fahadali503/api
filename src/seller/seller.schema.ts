@@ -5,4 +5,7 @@ import { User } from "src/user/model/User.model";
 export class Seller extends User {
     @Field()
     business: string;
+
+    @Field(type => [User], { nullable: true })
+    followings?: string[];
 }

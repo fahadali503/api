@@ -1,4 +1,4 @@
-import { Args, Mutation, Query } from '@nestjs/graphql';
+import { Args, Mutation, Query, } from '@nestjs/graphql';
 import { Resolver } from '@nestjs/graphql';
 import { SignUpInput } from './args-types/sign-up.args';
 import { GraphQLUpload, FileUpload } from 'graphql-upload';
@@ -9,6 +9,9 @@ import { IJwtPayload } from 'src/utils/types';
 import { UseGuards } from '@nestjs/common';
 import { GqlGuard } from 'src/auth/gql.guard';
 import { Public } from 'src/auth/public.decorator';
+import { Customer } from 'src/customer/customer.schema';
+import { Seller } from 'src/seller/seller.schema';
+import { MeUnionResult } from 'src/common/gql/unions.gql';
 
 
 @UseGuards(GqlGuard)
@@ -24,7 +27,7 @@ export class UserResolver {
         return this.UserService.createUser(data, profilePicture);
     }
 
-    @Query(type => User)
+    @Query(type => MeUnionResult, { nullable: true })
     me(@CurrentUser() user: IJwtPayload): Promise<User> {
         return this.UserService.findUserById(user._id)
     }

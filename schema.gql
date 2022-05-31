@@ -39,11 +39,6 @@ type Image {
   updatedAt: String!
 }
 
-type Auth {
-  token: String!
-  user: User!
-}
-
 type Customer {
   _id: String!
   fullName: String!
@@ -64,10 +59,41 @@ type Customer {
   favourites: [String!]
 }
 
+type Auth {
+  token: String!
+  user: User!
+}
+
 type Query {
-  me: User!
+  me: MeUnionResult
   login(email: String!, password: String!): Auth!
   getCustomer: Customer!
+}
+
+"""
+When the User will logs in, it will either return seller details or customer details
+"""
+union MeUnionResult = Customer | Seller
+
+type Seller {
+  _id: String!
+  fullName: String!
+  username: String!
+  email: String!
+  role: String!
+  isAccountVerified: Boolean!
+  isAccountConfirmed: Boolean!
+  isPremiumAccount: Boolean!
+  isOnline: Boolean!
+  imageId: Image
+  profilePicture: String!
+  lastSeen: DateTime!
+  blocked: Boolean!
+  location: String
+  createdAt: String!
+  updatedAt: String!
+  business: String!
+  followings: [User!]
 }
 
 type Mutation {

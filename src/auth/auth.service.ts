@@ -24,6 +24,9 @@ export class AuthService {
         if (!comparedPassword) {
             throw new BadRequestException("Invalid email/password")
         }
+        if (user.blocked) {
+            throw new BadRequestException("Your account has been blocked. Please contact help center.")
+        }
         return user;
     }
     async login(data: LoginArgs): Promise<ILogin> {
