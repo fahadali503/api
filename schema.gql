@@ -27,7 +27,7 @@ type User {
   isAccountConfirmed: Boolean!
   isPremiumAccount: Boolean!
   isOnline: Boolean!
-  imageId: Image
+  imageId: ImageModel
   profilePicture: String!
   lastSeen: DateTime!
   blocked: Boolean!
@@ -58,14 +58,17 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type Image {
+type ImageModel {
+  _id: String!
   width: Float!
   height: Float!
   format: String!
   resource_type: String!
   bytes: Float!
   url: String!
+  folder: String!
   original_filename: String!
+  asset_id: String!
   userId: User!
   createdAt: String!
   updatedAt: String!
@@ -81,7 +84,7 @@ type Customer {
   isAccountConfirmed: Boolean!
   isPremiumAccount: Boolean!
   isOnline: Boolean!
-  imageId: Image
+  imageId: ImageModel
   profilePicture: String!
   lastSeen: DateTime!
   blocked: Boolean!
@@ -115,9 +118,11 @@ type BusinessComment {
 
 """Business Schema for Seller"""
 type Business {
+  _id: String!
   ownerId: User!
   businessName: String!
   businessDescription: String!
+  imageId: ImageModel!
   businessImage: String!
   businessEmail: String!
   ownerName: String!
@@ -136,23 +141,36 @@ type Business {
   comments: [BusinessComment!]!
   closingTime: String!
   openingTime: String!
-}
-
-type Auth {
-  token: String!
-  user: User!
-}
-
-type Query {
-  me: MeUnionResult
-  login(email: String!, password: String!): Auth!
-  getCustomer: Customer!
+  isBusinessVerified: Boolean!
+  businessVerifiedBy: User!
+  businessVerifyTime: String!
+  viewers: [RolesUnionType!]!
 }
 
 """
-When the User will logs in, it will either return seller details or customer details
+The Roles Union Type is basic interface that will differentiate between who just have queried.
 """
-union MeUnionResult = Customer | Seller
+union RolesUnionType = Customer | Seller | Marketer
+
+type Marketer {
+  _id: String!
+  fullName: String!
+  username: String!
+  email: String!
+  role: Roles!
+  isAccountVerified: Boolean!
+  isAccountConfirmed: Boolean!
+  isPremiumAccount: Boolean!
+  isOnline: Boolean!
+  imageId: ImageModel
+  profilePicture: String!
+  lastSeen: DateTime!
+  blocked: Boolean!
+  location: Location
+  createdAt: String!
+  updatedAt: String!
+  sellers: [Seller!]!
+}
 
 type Seller {
   _id: String!
@@ -164,7 +182,7 @@ type Seller {
   isAccountConfirmed: Boolean!
   isPremiumAccount: Boolean!
   isOnline: Boolean!
-  imageId: Image
+  imageId: ImageModel
   profilePicture: String!
   lastSeen: DateTime!
   blocked: Boolean!
@@ -175,11 +193,38 @@ type Seller {
   followings: [User!]!
 }
 
+type Auth {
+  token: String!
+  user: User!
+}
+
+"""
+The return type that will return a message and a business whenever a business will be created.
+"""
+type CreateBusinessReturnType {
+  message: String!
+  business: Business!
+}
+
+type Query {
+  me: MeUnionResult
+  login(email: String!, password: String!): Auth!
+  getCustomer: Customer!
+
+  """Find Business By ID"""
+  findBusiness(businessId: String!): Business
+}
+
+"""
+When the User will logs in, it will either return seller details or customer details
+"""
+union MeUnionResult = Customer | Seller
+
 type Mutation {
   signUp(data: SignUpInput!, profilePicture: Upload!): String!
-  createBusiness(data: CreateBusinessInput!, businessImage: Upload!): Business!
-  uploadSingleImage(image: Upload!): Image!
-  uploadMultiple(image: [Upload!]!): [Image!]!
+  createBusiness(data: CreateBusinessInput!, businessImage: Upload!): CreateBusinessReturnType!
+  uploadSingleImage(image: Upload!): ImageModel!
+  uploadMultiple(image: [Upload!]!): [ImageModel!]!
 }
 
 input SignUpInput {

@@ -2,7 +2,7 @@ import { ROLES } from "src/utils/role";
 import { modelOptions, prop, Ref } from '@typegoose/typegoose'
 import { Location } from "src/common/models/Location";
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Image } from "src/common/models/Image";
+import { ImageModel } from "src/common/models/Image";
 
 @ObjectType()
 @modelOptions({ schemaOptions: { timestamps: true } })
@@ -49,9 +49,9 @@ export class User {
     @Field(type => Boolean)
     isOnline: boolean;
 
-    @Field(type => Image, { nullable: true })
+    @Field(type => ImageModel, { nullable: true })
     @prop({ type: String })
-    imageId: Ref<Image, string>;
+    imageId: Ref<ImageModel, string>;
 
     @prop()
     @Field()

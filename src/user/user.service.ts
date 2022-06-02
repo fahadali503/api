@@ -4,7 +4,7 @@ import { hash } from 'bcryptjs';
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
 import { FileUpload } from 'graphql-upload';
 import { InjectModel } from 'nestjs-typegoose';
-import { Image } from 'src/common/models/Image';
+import { ImageModel } from 'src/common/models/Image';
 import { Cloudinary, ICloudinaryImage } from 'src/utils/cloudinary';
 import { ROLES } from 'src/utils/role';
 import { SignUpInput } from './args-types/sign-up.args';
@@ -14,7 +14,7 @@ import { User } from './model/User.model';
 export class UserService {
     constructor(
         @InjectModel(User) private readonly UserModel: ReturnModelType<typeof User>,
-        @InjectModel(Image) private readonly ImageModel: ReturnModelType<typeof Image>
+        @InjectModel(ImageModel) private readonly imageModel: ReturnModelType<typeof ImageModel>
     ) { }
 
     async findByUsername(username: string) {
@@ -52,7 +52,7 @@ export class UserService {
     }
 
     private async createProfilePicture({ width, height, format, resource_type, bytes, url, secure_url, asset_id }: ICloudinaryImage, userId: string) {
-        const profilePicture = new this.ImageModel({
+        const profilePicture = new this.imageModel({
             width,
             height,
             format,

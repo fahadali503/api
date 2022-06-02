@@ -1,5 +1,7 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { modelOptions, mongoose, prop, Ref } from "@typegoose/typegoose";
+import { RolesUnionType } from "src/common/gql/unions.gql";
+import { ImageModel } from "src/common/models/Image";
 import { Location } from "src/common/models/Location";
 import { BusinessReview } from "src/common/models/Review.model";
 import { User } from "src/user/model/User.model";
@@ -8,6 +10,9 @@ import { BusinessComment } from "./business-comment.model";
 @ObjectType({ description: "Business Schema for Seller" })
 @modelOptions({ schemaOptions: { timestamps: true } })
 export class Business {
+
+    @Field()
+    _id: string;
 
     @Field(type => User)
     @prop({ type: String, ref: () => User })
@@ -20,6 +25,10 @@ export class Business {
     @Field()
     @prop()
     businessDescription: string;
+
+    @Field(type => ImageModel)
+    @prop({ type: String, ref: () => ImageModel })
+    imageId: Ref<ImageModel, string>;
 
     @Field()
     @prop()
@@ -93,6 +102,25 @@ export class Business {
     @Field()
     @prop()
     openingTime: string;
+
+
+    @Field(type => Boolean)
+    @prop({ type: Boolean, default: false })
+    isBusinessVerified: boolean;
+
+    @Field(type => User) //Which admin or super-admin verified the business of the seller
+    @prop({ type: String, ref: User })
+    businessVerifiedBy: Ref<User, string>;
+
+
+    @Field()
+    @prop() //At what time the admin or the super-admin verified the business.
+    businessVerifyTime: string;
+
+    @Field(type => [RolesUnionType])
+    @prop({ type: String, ref: () => User })
+    viewers: Ref<User, string>;
+
 }
 
 

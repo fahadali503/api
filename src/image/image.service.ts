@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { FileUpload } from 'graphql-upload';
 import { InjectModel } from 'nestjs-typegoose';
-import { Image } from 'src/common/models/Image';
+import { ImageModel } from 'src/common/models/Image';
 import { Cloudinary, ICloudinaryImage } from 'src/utils/cloudinary';
 
 @Injectable()
 export class ImageService {
     constructor(
-        @InjectModel(Image) private readonly ImageModel: ReturnModelType<typeof Image>
+        @InjectModel(ImageModel) private readonly imageModel: ReturnModelType<typeof ImageModel>
     ) { }
 
     private uploadImage(file: FileUpload, folder: string) {
@@ -35,31 +35,41 @@ export class ImageService {
         }) as Promise<ICloudinaryImage>;
     }
 
-    async createImage(file: FileUpload | FileUpload[], folder: string, userId: string) {
-        // const files: Image[] = [];
-        if (Array.isArray(file)) {
-            const files = (await Promise.all(file)).map(async (image) => {
-                const { width, height, format, resource_type, bytes, url, secure_url, asset_id } = await this.uploadImage(image, folder)
-                const newImage = new this.ImageModel({
-                    width, height, format, resource_type, bytes, url, secure_url, asset_id, userId
-                });
-                return await newImage.save();
-            });
-            return files;
-        }
-        const stream = file.createReadStream();
-        let image = new Promise((resolve, reject) => {
-            stream.pipe(Cloudinary.uploader.upload_stream({
-                unique_filename: false, discard_original_filename: false, use_filename: true, folder
-            }, (err, data) => {
-                resolve(data);
-                reject(err);
-            }))
-        });
-        const imageToBeSave = await image as ICloudinaryImage;
-        const newImage = new this.ImageModel({ ...imageToBeSave, userId });
+    // private async createImage(file: FileUpload | FileUpload[], folder: string, userId: string) {
+    //     // const files: Image[] = [];
+    //     const stream = file.createReadStream();
+    //     let image = new Promise((resolve, reject) => {
+    //         stream.pipe(Cloudinary.uploader.upload_stream({
+    //             unique_filename: false, discard_original_filename: false, use_filename: true, folder
+    //         }, (err, data) => {
+    //             resolve(data);
+    //             reject(err);
+    //         }))
+    //     });
+    //     const imageToBeSave = await image as ICloudinaryImage;
+    //     const newImage = new this.ImageModel({ ...imageToBeSave, folder, userId });
+    //     await newImage.save();
+    //     return newImage;
+    // }
+
+    async uploadSingle(file: FileUpload, folder: string, userId: string) {
+        const image = await this.uploadImage(file, folder);
+        const newImage = new this.imageModel({ ...image, folder, userId });
         await newImage.save();
         return newImage;
+    }
+
+    async uploadMultiple(file: FileUpload[], folder: string, userId: string) {
+        const files = await Promise.all(file)
+        const images = files.map(async (image) => {
+            const { width, height, format, resource_type, bytes, url, secure_url, asset_id } = await this.uploadImage(image, folder)
+            const newImage = new this.imageModel({
+                width, height, format, folder, resource_type, bytes, url, secure_url, asset_id, userId
+            });
+            return await newImage.save();
+        });
+        return images;
+
     }
 
 }

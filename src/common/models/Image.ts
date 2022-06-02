@@ -3,8 +3,11 @@ import { modelOptions, prop, Ref } from "@typegoose/typegoose";
 import { User } from "src/user/model/User.model";
 
 @ObjectType()
-@modelOptions({ schemaOptions: { timestamps: true } })
-export class Image {
+@modelOptions({ schemaOptions: { timestamps: true }, options: { customName: "Image" } })
+export class ImageModel {
+    @Field()
+    _id: string;
+
     @prop({ type: Number })
     @Field()
     width: number;
@@ -34,7 +37,13 @@ export class Image {
 
     @Field()
     @prop()
+    folder: string;
+
+    @Field()
+    @prop()
     original_filename: string;
+
+    @Field()
     @prop()
     asset_id: string;
 

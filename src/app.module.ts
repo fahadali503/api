@@ -11,6 +11,7 @@ import { AdminModule } from './admin/admin.module';
 import { SuperAdminModule } from './super-admin/super-admin.module';
 import { BusinessModule } from './business/business.module';
 import { ImageModule } from './image/image.module';
+import { MarketerModule } from './marketer/marketer.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ImageModule } from './image/image.module';
     SuperAdminModule,
     BusinessModule,
     ImageModule,
+    MarketerModule,
   ],
 })
 export class AppModule { }
