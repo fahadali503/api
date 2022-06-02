@@ -7,6 +7,7 @@ import { ROLES } from 'src/utils/role';
 import { RoleGuard } from 'src/utils/role.guard';
 import { Roles } from 'src/utils/roles.decorator';
 import { IJwtPayload } from 'src/utils/types';
+import { CreateBusinessGuard } from './business.guard';
 import { BusinessService } from './business.service';
 import { CreateBusinessInput } from './inputs/create-business.input';
 import { EditBusinessInput } from './inputs/edit-business.input';
@@ -28,7 +29,7 @@ export class BusinessResolver {
     }
 
     // Create Business mutation
-    @UseGuards(RoleGuard)
+    @UseGuards(RoleGuard, CreateBusinessGuard,)
     @Roles(ROLES.SELLER)
     @Mutation(returns => CreateBusinessReturnType)
     createBusiness(@Args('data', { type: () => CreateBusinessInput }) data: CreateBusinessInput, @Args("businessImage", { type: () => GraphQLUpload }) businessImage: FileUpload, @CurrentUser() user: IJwtPayload): Promise<CreateBusinessReturnType> {

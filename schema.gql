@@ -189,7 +189,7 @@ type Seller {
   location: Location
   createdAt: String!
   updatedAt: String!
-  business: Business
+  business: [Business!]!
   followings: [User!]!
 }
 
@@ -207,18 +207,13 @@ type CreateBusinessReturnType {
 }
 
 type Query {
-  me: MeUnionResult
+  me: RolesUnionType
   login(email: String!, password: String!): Auth!
   getCustomer: Customer!
 
   """Find Business By ID"""
   findBusiness(businessId: String!): Business
 }
-
-"""
-When the User will logs in, it will either return seller details or customer details
-"""
-union MeUnionResult = Customer | Seller
 
 type Mutation {
   signUp(data: SignUpInput!, profilePicture: Upload!): String!

@@ -11,7 +11,7 @@ import { GqlGuard } from 'src/auth/gql.guard';
 import { Public } from 'src/auth/public.decorator';
 import { Customer } from 'src/customer/customer.schema';
 import { Seller } from 'src/seller/seller.schema';
-import { MeUnionResult } from 'src/common/gql/unions.gql';
+import { MeUnionResult, RolesUnionType } from 'src/common/gql/unions.gql';
 
 
 @UseGuards(GqlGuard)
@@ -27,7 +27,7 @@ export class UserResolver {
         return this.UserService.createUser(data, profilePicture);
     }
 
-    @Query(type => MeUnionResult, { nullable: true })
+    @Query(type => RolesUnionType, { nullable: true })
     me(@CurrentUser() user: IJwtPayload): Promise<User> {
         return this.UserService.findUserById(user._id)
     }

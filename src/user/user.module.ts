@@ -9,6 +9,7 @@ import { UserService } from './user.service';
   imports: [
     TypegooseModule.forFeature([User, ImageModel])
   ],
-  providers: [UserResolver, UserService]
+  providers: [UserResolver, UserService],
+  exports: [UserService]
 })
 export class UserModule { }

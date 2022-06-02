@@ -44,6 +44,10 @@ export class BusinessService {
         }
     }
 
+    async findBusinessByUserId(ownerId: string): Promise<Business[]> {
+        return await this.BusinessModel.find({ ownerId });
+    }
+
 
     // delete business by id
     async deleteBusinessById(businessId: string): Promise<string> {
