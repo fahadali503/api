@@ -178,6 +178,8 @@ type Seller {
 type Mutation {
   signUp(data: SignUpInput!, profilePicture: Upload!): String!
   createBusiness(data: CreateBusinessInput!, businessImage: Upload!): Business!
+  uploadSingleImage(image: Upload!): Image!
+  uploadMultiple(image: [Upload!]!): [Image!]!
 }
 
 input SignUpInput {

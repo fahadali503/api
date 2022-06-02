@@ -10,6 +10,7 @@ import { SellerModule } from './seller/seller.module';
 import { AdminModule } from './admin/admin.module';
 import { SuperAdminModule } from './super-admin/super-admin.module';
 import { BusinessModule } from './business/business.module';
+import { ImageModule } from './image/image.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { BusinessModule } from './business/business.module';
     AdminModule,
     SuperAdminModule,
     BusinessModule,
+    ImageModule,
   ],
 })
 export class AppModule { }
