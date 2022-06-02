@@ -20,4 +20,10 @@ export class SellerResolver {
     business(@Parent() seller: Seller) {
         return this.SellerService.findBusiness(seller._id);
     }
+
+    @Roles(ROLES.SELLER)
+    @ResolveField()
+    followings(@Parent() parent: Seller) {
+        return this.SellerService.findFollowings(parent._id)
+    }
 }

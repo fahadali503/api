@@ -1,8 +1,11 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { FileUpload, GraphQLUpload } from 'graphql-upload';
 import { CurrentUser } from 'src/auth/current-user-decorator';
 import { GqlGuard } from 'src/auth/gql.guard';
+import { ImageModel } from 'src/common/models/Image';
+import { Seller } from 'src/seller/seller.schema';
+import { User } from 'src/user/model/User.model';
 import { ROLES } from 'src/utils/role';
 import { RoleGuard } from 'src/utils/role.guard';
 import { Roles } from 'src/utils/roles.decorator';
@@ -12,7 +15,7 @@ import { BusinessService } from './business.service';
 import { CreateBusinessInput } from './inputs/create-business.input';
 import { EditBusinessInput } from './inputs/edit-business.input';
 import { Business } from './models/business.model';
-import { CreateBusinessReturnType } from './schema-types/create-business';
+import { CreateBusinessReturnType } from './return-types/create-business';
 
 @UseGuards(GqlGuard)
 @Resolver(of => Business)
@@ -27,6 +30,20 @@ export class BusinessResolver {
     findBusiness(@Args("businessId") id: string): Promise<Business> {
         return this.BusinessService.findBusinessById(id);
     }
+
+
+    // Owner Id Field Resolver
+    @ResolveField()
+    ownerId(@Parent() parent: Business): Promise<Seller> {
+        return this.BusinessService.findOwner(parent.ownerId as string);
+    }
+
+    // imageId Field Resolver
+    @ResolveField()
+    imageId(@Parent() parent: Business): Promise<ImageModel> {
+        return this.BusinessService.findImageById(parent.imageId as string);
+    }
+
 
     // Create Business mutation
     @UseGuards(RoleGuard, CreateBusinessGuard,)
@@ -45,6 +62,7 @@ export class BusinessResolver {
         return this.BusinessService.editBusiness(id, data)
     }
 
+    // Delete Mutation
     @Roles(ROLES.SELLER)
     @UseGuards(RoleGuard)
     @Mutation(returns => String, { description: "Delete business by id" })

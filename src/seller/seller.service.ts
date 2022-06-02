@@ -15,6 +15,13 @@ export class SellerService {
         return await this.BusinessService.findBusinessByUserId(sellerId);
     }
 
+    async findFollowings(sellerId: string) {
+        this.isValidObject(sellerId);
+        const seller = await this.UserService.findUserById(sellerId)
+        return seller.followings;
+    }
+
+
     private isValidObject(sellerId: string) {
         const isValid = IsValidObjectId(sellerId);
         if (!isValid) {

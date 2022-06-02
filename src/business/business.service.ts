@@ -9,16 +9,20 @@ import { IsValidObjectId } from 'src/utils/fns';
 import { CreateBusinessInput } from './inputs/create-business.input';
 import { EditBusinessInput } from './inputs/edit-business.input';
 import { Business } from './models/business.model';
-import { CreateBusinessReturnType } from './schema-types/create-business';
+import { CreateBusinessReturnType } from './return-types/create-business';
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { ImagesEvent } from 'src/utils/events';
+import { User } from 'src/user/model/User.model';
+import { Seller } from 'src/seller/seller.schema';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class BusinessService {
     constructor(
         @InjectModel(Business) private readonly BusinessModel: ReturnModelType<typeof Business>,
         private readonly ImageService: ImageService,
-        private readonly eventEmitter: EventEmitter2
+        private readonly eventEmitter: EventEmitter2,
+        private readonly UserService: UserService
     ) { }
 
 
@@ -62,12 +66,24 @@ export class BusinessService {
         return `${business.businessName} has been deleted Successfully!`;
     }
 
+    async findOwner(ownerId: string): Promise<Seller> {
+        this.isValidId(ownerId);
+        const owner = await this.UserService.findUserById(ownerId);
+        return owner as Seller;
+    }
+
     // findBusiness By ID
 
     async findBusinessById(businessId: string): Promise<Business> {
         this.isValidId(businessId);
         const business = await this.BusinessModel.findById(businessId)
         return business;
+    }
+
+    async findImageById(imageId: string): Promise<ImageModel> {
+        this.isValidId(imageId);
+        const image = await this.ImageService.findImageById(imageId);
+        return image;
     }
 
 

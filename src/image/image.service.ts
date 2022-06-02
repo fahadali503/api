@@ -78,4 +78,11 @@ export class ImageService {
         await Cloudinary.uploader.destroy(image.url);
     }
 
+
+    // find Image By Id
+    async findImageById(imageId: string): Promise<ImageModel> {
+        const image = await this.imageModel.findById(imageId);
+        return image;
+    }
+
 }

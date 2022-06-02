@@ -4,7 +4,7 @@ import { User } from "src/user/model/User.model";
 
 @ObjectType()
 export class Seller extends User {
-    @Field(type => [Business])
+    @Field(type => [Business]) //Field is resolved
     business: string[];
 
     @Field(type => [User])

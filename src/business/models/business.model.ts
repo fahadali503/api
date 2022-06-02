@@ -4,6 +4,7 @@ import { RolesUnionType } from "src/common/gql/unions.gql";
 import { ImageModel } from "src/common/models/Image";
 import { Location } from "src/common/models/Location";
 import { BusinessReview } from "src/common/models/Review.model";
+import { Seller } from "src/seller/seller.schema";
 import { User } from "src/user/model/User.model";
 import { BusinessComment } from "./business-comment.model";
 
@@ -14,7 +15,7 @@ export class Business {
     @Field()
     _id: string;
 
-    @Field(type => User)
+    @Field(type => Seller) // The ownerId field is Resolved 
     @prop({ type: String, ref: () => User })
     ownerId: Ref<User, string>;
 

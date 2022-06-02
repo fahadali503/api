@@ -119,7 +119,7 @@ type BusinessComment {
 """Business Schema for Seller"""
 type Business {
   _id: String!
-  ownerId: User!
+  ownerId: Seller!
   businessName: String!
   businessDescription: String!
   imageId: ImageModel!
