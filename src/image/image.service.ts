@@ -72,4 +72,10 @@ export class ImageService {
 
     }
 
+
+    async deleteImageById(id: string) {
+        const image = await this.imageModel.findByIdAndDelete(id);
+        await Cloudinary.uploader.destroy(image.url);
+    }
+
 }

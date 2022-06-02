@@ -12,6 +12,7 @@ import { SuperAdminModule } from './super-admin/super-admin.module';
 import { BusinessModule } from './business/business.module';
 import { ImageModule } from './image/image.module';
 import { MarketerModule } from './marketer/marketer.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -21,6 +22,10 @@ import { MarketerModule } from './marketer/marketer.module';
       context: ({ req }) => ({ req })
     }),
     TypegooseModule.forRoot('mongodb://localhost:27017/ubinzo'),
+    EventEmitterModule.forRoot({
+      delimiter: '.',
+      maxListeners: 100
+    }),
     UserModule,
     AuthModule,
     CustomerModule,

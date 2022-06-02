@@ -224,6 +224,9 @@ type Mutation {
   signUp(data: SignUpInput!, profilePicture: Upload!): String!
   createBusiness(data: CreateBusinessInput!, businessImage: Upload!): CreateBusinessReturnType!
   editBusiness(businessId: String!, data: EditBusinessInput!): CreateBusinessReturnType!
+
+  """Delete business by id"""
+  deleteBusiness(businessId: String!): String!
   uploadSingleImage(image: Upload!): ImageModel!
   uploadMultiple(image: [Upload!]!): [ImageModel!]!
 }

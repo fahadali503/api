@@ -38,8 +38,16 @@ export class BusinessResolver {
 
     // Edit Business
     @Roles(ROLES.SELLER)
+    @UseGuards(RoleGuard)
     @Mutation(returns => CreateBusinessReturnType)
     editBusiness(@Args("businessId") id: string, @Args('data') data: EditBusinessInput, @CurrentUser() user: IJwtPayload): Promise<CreateBusinessReturnType> {
         return this.BusinessService.editBusiness(id, data)
+    }
+
+    @Roles(ROLES.SELLER)
+    @UseGuards(RoleGuard)
+    @Mutation(returns => String, { description: "Delete business by id" })
+    deleteBusiness(@Args("businessId") id: string): Promise<string> {
+        return this.BusinessService.deleteBusinessById(id);
     }
 }

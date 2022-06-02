@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { FileUpload } from 'graphql-upload';
 import { InjectModel } from 'nestjs-typegoose';
@@ -10,12 +10,15 @@ import { CreateBusinessInput } from './inputs/create-business.input';
 import { EditBusinessInput } from './inputs/edit-business.input';
 import { Business } from './models/business.model';
 import { CreateBusinessReturnType } from './schema-types/create-business';
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import { ImagesEvent } from 'src/utils/events';
 
 @Injectable()
 export class BusinessService {
     constructor(
         @InjectModel(Business) private readonly BusinessModel: ReturnModelType<typeof Business>,
-        private readonly ImageService: ImageService
+        private readonly ImageService: ImageService,
+        private readonly eventEmitter: EventEmitter2
     ) { }
 
 
@@ -39,6 +42,20 @@ export class BusinessService {
             message: "Your request to create business has been submitted.",
             business
         }
+    }
+
+
+    // delete business by id
+    async deleteBusinessById(businessId: string): Promise<string> {
+        this.isValidId(businessId)
+        const business = await this.findBusinessById(businessId);
+        if (!business) {
+            throw new NotFoundException("Business not found!")
+        }
+        // send this event, so that image module will use this id to remove the image from the database
+        this.eventEmitter.emit(ImagesEvent.DELETE_IMAGE, { id: business.imageId });
+        await this.BusinessModel.findOneAndDelete({ _id: businessId });
+        return `${business.businessName} has been deleted Successfully!`;
     }
 
     // findBusiness By ID
