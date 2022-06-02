@@ -7,6 +7,7 @@ import { ImageService } from 'src/image/image.service';
 import { CloudinaryConstants } from 'src/utils/constants';
 import { IsValidObjectId } from 'src/utils/fns';
 import { CreateBusinessInput } from './inputs/create-business.input';
+import { EditBusinessInput } from './inputs/edit-business.input';
 import { Business } from './models/business.model';
 import { CreateBusinessReturnType } from './schema-types/create-business';
 
@@ -46,6 +47,16 @@ export class BusinessService {
         this.isValidId(businessId);
         const business = await this.BusinessModel.findById(businessId)
         return business;
+    }
+
+
+    async editBusiness(businessId: string, data: EditBusinessInput): Promise<CreateBusinessReturnType> {
+        this.isValidId(businessId);
+        const business = await this.BusinessModel.findOneAndUpdate({ _id: businessId }, { $set: { ...data } }, { new: true });
+        return {
+            message: `${business.businessName} has been updated`,
+            business
+        }
     }
 
     private isValidId(id: string | number | Buffer | Uint8Array) {

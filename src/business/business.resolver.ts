@@ -9,6 +9,7 @@ import { Roles } from 'src/utils/roles.decorator';
 import { IJwtPayload } from 'src/utils/types';
 import { BusinessService } from './business.service';
 import { CreateBusinessInput } from './inputs/create-business.input';
+import { EditBusinessInput } from './inputs/edit-business.input';
 import { Business } from './models/business.model';
 import { CreateBusinessReturnType } from './schema-types/create-business';
 
@@ -26,8 +27,6 @@ export class BusinessResolver {
         return this.BusinessService.findBusinessById(id);
     }
 
-
-
     // Create Business mutation
     @UseGuards(RoleGuard)
     @Roles(ROLES.SELLER)
@@ -36,4 +35,11 @@ export class BusinessResolver {
         return this.BusinessService.create(data, businessImage, user._id)
     }
 
+
+    // Edit Business
+    @Roles(ROLES.SELLER)
+    @Mutation(returns => CreateBusinessReturnType)
+    editBusiness(@Args("businessId") id: string, @Args('data') data: EditBusinessInput, @CurrentUser() user: IJwtPayload): Promise<CreateBusinessReturnType> {
+        return this.BusinessService.editBusiness(id, data)
+    }
 }

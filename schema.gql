@@ -223,6 +223,7 @@ union MeUnionResult = Customer | Seller
 type Mutation {
   signUp(data: SignUpInput!, profilePicture: Upload!): String!
   createBusiness(data: CreateBusinessInput!, businessImage: Upload!): CreateBusinessReturnType!
+  editBusiness(businessId: String!, data: EditBusinessInput!): CreateBusinessReturnType!
   uploadSingleImage(image: Upload!): ImageModel!
   uploadMultiple(image: [Upload!]!): [ImageModel!]!
 }
@@ -250,4 +251,17 @@ input CreateBusinessInput {
   offDays: [Float!]!
   closingTime: String!
   openingTime: String!
+}
+
+input EditBusinessInput {
+  businessName: String
+  businessDescription: String
+  businessEmail: String
+  ownerName: String
+  ownerCNIC: String
+  businessPhone: String
+  experience: String
+  offDays: String
+  closingTime: String
+  openingTime: String
 }
